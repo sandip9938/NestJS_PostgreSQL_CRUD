@@ -1,180 +1,89 @@
-# NestJS + PostgreSQL CRUD API
+# NestJS PostgreSQL CRUD
 
-Ek simple **Products CRUD REST API** jo NestJS, TypeORM aur PostgreSQL se bani hai. Learning aur portfolio dono ke liye accha starter project.
+A NestJS starter API and the starting point for a PostgreSQL CRUD application. At the moment, the app exposes a single `GET /` endpoint that returns `Hello World!`; PostgreSQL integration and CRUD endpoints have not been implemented yet.
 
-## Features
+## Current features
 
-- Full CRUD: Create, Read, Update, Delete
-- PostgreSQL database with TypeORM (tables auto-create dev me)
-- Request validation using `class-validator` DTOs
-- Proper error handling (404 jab product na mile, 400 jab input galat ho)
-- Environment based config (`.env`)
+- NestJS application with TypeScript
+- `GET /` health check
+- Unit and end-to-end tests using Vitest
+- Optional observability with NestJS Observe
 
-## Tech Stack
+## Requirements
 
-| Tech | Kaam |
-|------|------|
-| NestJS | Backend framework |
-| PostgreSQL | Database |
-| TypeORM | ORM (DB se baat karne ke liye) |
-| class-validator | DTO validation |
-| @nestjs/config | `.env` management |
+- Node.js and npm
 
-## Prerequisites
+PostgreSQL is not required to run the current application. It will be needed when database support is added.
 
-- Node.js 18+
-- PostgreSQL (running)
-- npm
+## Getting started
 
-## Setup
-
-### 1. Repo clone karo aur dependencies install karo
+Clone the repository and install dependencies:
 
 ```bash
-git clone <your-repo-url>
-cd nest-crud-demo
+git clone https://github.com/sandip9938/NestJS_PostgreSQL_CRUD.git
+cd NestJS_PostgreSQL_CRUD
 npm install
 ```
 
-### 2. Database banao
+Start the development server:
 
 ```bash
-psql -U postgres
-CREATE DATABASE nest_crud;
-\q
-```
-
-### 3. `.env` file banao (project root me)
-
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASS=your_password
-DB_NAME=nest_crud
-PORT=3000
-```
-
-> `.env` ko `.gitignore` me zaroor rakhna. Password push mat karna.
-
-### 4. App run karo
-
-```bash
-# development (auto reload)
 npm run start:dev
-
-# production
-npm run build
-npm run start:prod
 ```
 
-App chalega: `http://localhost:3000`
+The server listens on `http://localhost:3000` by default. Set the `PORT` environment variable to use a different port.
 
-## API Endpoints
+## API
 
-Base URL: `http://localhost:3000`
+| Method | Path | Response |
+| --- | --- | --- |
+| `GET` | `/` | `Hello World!` |
 
-| Method | Endpoint | Kaam |
-|--------|----------|------|
-| POST | `/products` | Naya product banao |
-| GET | `/products` | Saare products lao |
-| GET | `/products/:id` | Ek product lao |
-| PATCH | `/products/:id` | Product update karo |
-| DELETE | `/products/:id` | Product delete karo |
-
-### Product fields
-
-| Field | Type | Required | Rules |
-|-------|------|----------|-------|
-| name | string | Yes | max 120 chars |
-| description | string | No | - |
-| price | number | Yes | >= 0, max 2 decimals |
-| stock | integer | No | >= 0 (default 0) |
-
-### Example requests
+Example:
 
 ```bash
-# Create
-curl -X POST http://localhost:3000/products \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Keyboard","price":1499.5,"stock":25}'
-
-# Get all
-curl http://localhost:3000/products
-
-# Get one
-curl http://localhost:3000/products/1
-
-# Update
-curl -X PATCH http://localhost:3000/products/1 \
-  -H "Content-Type: application/json" \
-  -d '{"price":1299,"stock":20}'
-
-# Delete
-curl -X DELETE http://localhost:3000/products/1
+curl http://localhost:3000/
 ```
 
-### Example response
+## Available scripts
 
-```json
-{
-  "id": 1,
-  "name": "Keyboard",
-  "description": null,
-  "price": 1499.5,
-  "stock": 25,
-  "isActive": true,
-  "createdAt": "2026-10-22T10:30:00.000Z",
-  "updatedAt": "2026-10-22T10:30:00.000Z"
-}
+| Command | Description |
+| --- | --- |
+| `npm run start` | Start the application |
+| `npm run start:dev` | Start in watch mode |
+| `npm run start:debug` | Start in debug/watch mode |
+| `npm run build` | Compile the application |
+| `npm run start:prod` | Run the compiled application |
+| `npm test` | Run unit tests |
+| `npm run test:e2e` | Run end-to-end tests |
+| `npm run test:cov` | Run tests with coverage |
+| `npm run lint` | Lint source and test files |
+
+## Observability (optional)
+
+The app includes [NestJS Observe](https://observe.nestjs.com). It can run without Observe credentials; telemetry is not connected until you configure them.
+
+To link an Observe account, run:
+
+```bash
+npx @nestjs/observe link
 ```
 
-## Project Structure
+This setup writes credentials to `.env`. Keep that file private; it is excluded by `.gitignore`. For production, provide `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` through your deployment environment.
 
-```
+## Project structure
+
+```text
 src/
+├── app.controller.spec.ts
+├── app.controller.ts
 ├── app.module.ts
-├── main.ts
-└── products/
-    ├── dto/
-    │   ├── create-product.dto.ts
-    │   └── update-product.dto.ts
-    ├── entities/
-    │   └── product.entity.ts
-    ├── products.controller.ts
-    ├── products.service.ts
-    └── products.module.ts
+├── app.service.ts
+└── main.ts
+test/
+└── app.e2e-spec.ts
 ```
 
-## Request Flow
+## Next steps
 
-```
-Client -> Controller -> Service -> Repository (TypeORM) -> PostgreSQL
-```
-
-## Important Notes
-
-- `synchronize: true` sirf **development** ke liye hai. Production me isse `false` karo aur **migrations** use karo, warna data loss ho sakta hai.
-- `ValidationPipe` `main.ts` me global on hona chahiye, warna DTO validation kaam nahi karegi.
-
-## Common Errors
-
-| Error | Fix |
-|-------|-----|
-| `password authentication failed` | `.env` me `DB_PASS` check karo |
-| `database "nest_crud" does not exist` | `CREATE DATABASE nest_crud;` run karo |
-| `ECONNREFUSED 5432` | PostgreSQL service start karo |
-| `Nest can't resolve dependencies` | `TypeOrmModule.forFeature([Product])` module me add karo |
-
-## Future Improvements
-
-- [ ] Pagination aur search
-- [ ] TypeORM migrations
-- [ ] Swagger API docs
-- [ ] JWT authentication
-- [ ] Category relation (`@ManyToOne` / `@OneToMany`)
-- [ ] Jest unit tests
-
-## Author
-
-**Sandip** - [GitHub](https://github.com/sandip9938) | [Portfolio](https://sandip-panda.netlify.app)
+To turn this starter into a PostgreSQL CRUD API, add database configuration, entities, DTOs, validation, and resource-specific modules and endpoints.
