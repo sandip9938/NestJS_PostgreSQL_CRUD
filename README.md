@@ -1,126 +1,180 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS + PostgreSQL CRUD API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Ek simple **Products CRUD REST API** jo NestJS, TypeORM aur PostgreSQL se bani hai. Learning aur portfolio dono ke liye accha starter project.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- Full CRUD: Create, Read, Update, Delete
+- PostgreSQL database with TypeORM (tables auto-create dev me)
+- Request validation using `class-validator` DTOs
+- Proper error handling (404 jab product na mile, 400 jab input galat ho)
+- Environment based config (`.env`)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Tech Stack
 
-## Project setup
+| Tech | Kaam |
+|------|------|
+| NestJS | Backend framework |
+| PostgreSQL | Database |
+| TypeORM | ORM (DB se baat karne ke liye) |
+| class-validator | DTO validation |
+| @nestjs/config | `.env` management |
 
-```bash
-$ npm install
-```
+## Prerequisites
 
-## Compile and run the project
+- Node.js 18+
+- PostgreSQL (running)
+- npm
+
+## Setup
+
+### 1. Repo clone karo aur dependencies install karo
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone <your-repo-url>
+cd nest-crud-demo
+npm install
 ```
 
-## Run tests
+### 2. Database banao
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+psql -U postgres
+CREATE DATABASE nest_crud;
+\q
 ```
 
-## Deployment
+### 3. `.env` file banao (project root me)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASS=your_password
+DB_NAME=nest_crud
+PORT=3000
+```
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+> `.env` ko `.gitignore` me zaroor rakhna. Password push mat karna.
+
+### 4. App run karo
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# development (auto reload)
+npm run start:dev
+
+# production
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+App chalega: `http://localhost:3000`
 
-## Observability
+## API Endpoints
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+Base URL: `http://localhost:3000`
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+| Method | Endpoint | Kaam |
+|--------|----------|------|
+| POST | `/products` | Naya product banao |
+| GET | `/products` | Saare products lao |
+| GET | `/products/:id` | Ek product lao |
+| PATCH | `/products/:id` | Product update karo |
+| DELETE | `/products/:id` | Product delete karo |
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+### Product fields
 
-This project is already instrumented. To connect it, run this and approve the code it prints at [observe.nestjs.com/link](https://observe.nestjs.com/link) - signing up for free if you have no account:
+| Field | Type | Required | Rules |
+|-------|------|----------|-------|
+| name | string | Yes | max 120 chars |
+| description | string | No | - |
+| price | number | Yes | >= 0, max 2 decimals |
+| stock | integer | No | >= 0 (default 0) |
+
+### Example requests
 
 ```bash
-$ npx @nestjs/observe link
+# Create
+curl -X POST http://localhost:3000/products \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Keyboard","price":1499.5,"stock":25}'
+
+# Get all
+curl http://localhost:3000/products
+
+# Get one
+curl http://localhost:3000/products/1
+
+# Update
+curl -X PATCH http://localhost:3000/products/1 \
+  -H "Content-Type: application/json" \
+  -d '{"price":1299,"stock":20}'
+
+# Delete
+curl -X DELETE http://localhost:3000/products/1
 ```
 
-It writes the app key and secret into `.env` and makes every `nest start` script (`start`, `start:dev`, `start:debug`) load it. In production, set `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` in the environment instead.
+### Example response
 
-Or do it by hand: create an application and an API key at [observe.nestjs.com](https://observe.nestjs.com), and set the pair as `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` in the environment the app runs in.
+```json
+{
+  "id": 1,
+  "name": "Keyboard",
+  "description": null,
+  "price": 1499.5,
+  "stock": 25,
+  "isActive": true,
+  "createdAt": "2026-10-22T10:30:00.000Z",
+  "updatedAt": "2026-10-22T10:30:00.000Z"
+}
+```
 
-The free plan needs no payment details and covers 300,000 events a month. You can also browse the [live demo](https://www.observe-demo.nestjs.com/dashboard) first - the whole dashboard over a busy service's data, with nothing to install.
+## Project Structure
 
-## Resources
+```
+src/
+├── app.module.ts
+├── main.ts
+└── products/
+    ├── dto/
+    │   ├── create-product.dto.ts
+    │   └── update-product.dto.ts
+    ├── entities/
+    │   └── product.entity.ts
+    ├── products.controller.ts
+    ├── products.service.ts
+    └── products.module.ts
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## Request Flow
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observe](https://observe.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```
+Client -> Controller -> Service -> Repository (TypeORM) -> PostgreSQL
+```
 
-## Support
+## Important Notes
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- `synchronize: true` sirf **development** ke liye hai. Production me isse `false` karo aur **migrations** use karo, warna data loss ho sakta hai.
+- `ValidationPipe` `main.ts` me global on hona chahiye, warna DTO validation kaam nahi karegi.
 
-## Stay in touch
+## Common Errors
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+| Error | Fix |
+|-------|-----|
+| `password authentication failed` | `.env` me `DB_PASS` check karo |
+| `database "nest_crud" does not exist` | `CREATE DATABASE nest_crud;` run karo |
+| `ECONNREFUSED 5432` | PostgreSQL service start karo |
+| `Nest can't resolve dependencies` | `TypeOrmModule.forFeature([Product])` module me add karo |
 
-## License
+## Future Improvements
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- [ ] Pagination aur search
+- [ ] TypeORM migrations
+- [ ] Swagger API docs
+- [ ] JWT authentication
+- [ ] Category relation (`@ManyToOne` / `@OneToMany`)
+- [ ] Jest unit tests
+
+## Author
+
+**Sandip** - [GitHub](https://github.com/sandip9938) | [Portfolio](https://sandip-panda.netlify.app)
