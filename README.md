@@ -1,29 +1,28 @@
 # NestJS PostgreSQL CRUD
 
-A NestJS starter API and the starting point for a PostgreSQL CRUD application. At the moment, the app exposes a single `GET /` endpoint that returns `Hello World!`; PostgreSQL integration and CRUD endpoints have not been implemented yet.
-
-## Current features
-
-- NestJS application with TypeScript
-- `GET /` health check
-- Unit and end-to-end tests using Vitest
-- Optional observability with NestJS Observe
+A REST API for managing products, built with NestJS, TypeORM, and PostgreSQL.
 
 ## Requirements
 
 - Node.js and npm
+- PostgreSQL
 
-PostgreSQL is not required to run the current application. It will be needed when database support is added.
+## Setup
 
-## Getting started
-
-Clone the repository and install dependencies:
+Install dependencies and copy the environment template:
 
 ```bash
-git clone https://github.com/sandip9938/NestJS_PostgreSQL_CRUD.git
-cd NestJS_PostgreSQL_CRUD
 npm install
+cp .env.example .env
 ```
+
+On Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Set the PostgreSQL connection values in `.env`, then create the database named by `DB_NAME` (default: `nest_crud`).
 
 Start the development server:
 
@@ -31,59 +30,74 @@ Start the development server:
 npm run start:dev
 ```
 
-The server listens on `http://localhost:3000` by default. Set the `PORT` environment variable to use a different port.
+The API listens on `http://localhost:3000` by default. Set `PORT` to change the port. Keep `.env` private; it is ignored by Git.
+
+## Environment variables
+
+| Variable   | Default     | Description                                                   |
+| ---------- | ----------- | ------------------------------------------------------------- |
+| `PORT`     | `3000`      | HTTP server port                                              |
+| `DB_HOST`  | `localhost` | PostgreSQL host                                               |
+| `DB_PORT`  | `5432`      | PostgreSQL port                                               |
+| `DB_USER`  | `postgres`  | PostgreSQL username                                           |
+| `DB_PASS`  | —           | PostgreSQL password                                           |
+| `DB_NAME`  | `nest_crud` | PostgreSQL database                                           |
+| `NODE_ENV` | —           | Set to `production` to disable TypeORM schema synchronization |
 
 ## API
 
-| Method | Path | Response |
-| --- | --- | --- |
-| `GET` | `/` | `Hello World!` |
+Base URL: `http://localhost:3000`
+
+| Method   | Endpoint        | Description      |
+| -------- | --------------- | ---------------- |
+| `GET`    | `/`             | Health check     |
+| `POST`   | `/products`     | Create a product |
+| `GET`    | `/products`     | List products    |
+| `GET`    | `/products/:id` | Get a product    |
+| `PATCH`  | `/products/:id` | Update a product |
+| `DELETE` | `/products/:id` | Delete a product |
+
+Product create fields:
+
+| Field         | Type    | Required | Validation                           |
+| ------------- | ------- | -------- | ------------------------------------ |
+| `name`        | string  | Yes      | Non-empty, up to 120 characters      |
+| `description` | string  | No       | Optional                             |
+| `price`       | number  | Yes      | Non-negative, up to 2 decimal places |
+| `stock`       | integer | No       | Non-negative; defaults to `0`        |
 
 Example:
 
 ```bash
-curl http://localhost:3000/
+curl -X POST http://localhost:3000/products \
+  -H "Content-Type: application/json" \
+  -d "{\"name\":\"Keyboard\",\"price\":1499.50,\"stock\":25}"
 ```
 
-## Available scripts
+## Commands
 
-| Command | Description |
-| --- | --- |
-| `npm run start` | Start the application |
-| `npm run start:dev` | Start in watch mode |
-| `npm run start:debug` | Start in debug/watch mode |
-| `npm run build` | Compile the application |
-| `npm run start:prod` | Run the compiled application |
-| `npm test` | Run unit tests |
-| `npm run test:e2e` | Run end-to-end tests |
-| `npm run test:cov` | Run tests with coverage |
-| `npm run lint` | Lint source and test files |
-
-## Observability (optional)
-
-The app includes [NestJS Observe](https://observe.nestjs.com). It can run without Observe credentials; telemetry is not connected until you configure them.
-
-To link an Observe account, run:
-
-```bash
-npx @nestjs/observe link
-```
-
-This setup writes credentials to `.env`. Keep that file private; it is excluded by `.gitignore`. For production, provide `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` through your deployment environment.
+| Command              | Description                |
+| -------------------- | -------------------------- |
+| `npm run start:dev`  | Start in watch mode        |
+| `npm run build`      | Build the application      |
+| `npm run start:prod` | Run the production build   |
+| `npm test`           | Run unit tests             |
+| `npm run test:e2e`   | Run end-to-end tests       |
+| `npm run lint`       | Lint source and test files |
 
 ## Project structure
 
 ```text
 src/
-├── app.controller.spec.ts
-├── app.controller.ts
 ├── app.module.ts
-├── app.service.ts
-└── main.ts
-test/
-└── app.e2e-spec.ts
+├── main.ts
+└── products/
+    ├── dto/
+    │   ├── create-product.dto.ts
+    │   └── update-product.dto.ts
+    ├── entities/
+    │   └── product.entity.ts
+    ├── products.controller.ts
+    ├── products.service.ts
+    └── products.module.ts
 ```
-
-## Next steps
-
-To turn this starter into a PostgreSQL CRUD API, add database configuration, entities, DTOs, validation, and resource-specific modules and endpoints.
